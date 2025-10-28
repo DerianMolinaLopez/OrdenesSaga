@@ -1,4 +1,4 @@
-package com.inventarios.inventarios.controller;
+package com.ordenes.ordenes.controllers;
 
 import java.io.IOException;
 
@@ -12,12 +12,10 @@ import org.springframework.stereotype.Controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ordenes.ordenes.constants.StringsKafkaConstants;
-import com.ordenes.ordenes.controllers.ControllerKafkaPublisher;
 import com.ordenes.ordenes.enums.TypeMessage;
+import com.ordenes.ordenes.exceptions.WorkOrderException;
 import com.ordenes.ordenes.services.WorkOrderService;
 import com.ordenes.ordenes.utils.CreateStringStatusResponse;
-
-
 @Controller
 public class KafkaListenerService {
     @Autowired
@@ -43,11 +41,9 @@ public class KafkaListenerService {
         if (!"grabado".equals(objetivo)) {
             logger.info("Logica de compesnacion");
             String numberOfOperation = message.split("_")[3];
-            this.workOrderService.work();
+            this.workOrderService.workCompensate();
             return;
         }
-
-      
 
         processInventoryMessage(message, numeroOperacion, idStep);
     }
@@ -55,10 +51,11 @@ public class KafkaListenerService {
     private void processInventoryMessage(String message, String numeroOperacion, String idStep) {
         try {
             JsonNode node = mapper.readTree(message);
-      //       workInventoryService.workInventoryLogic(node, idStep);
-         
-        } catch (IOException | WorkInventoryLogicException e) {
-        //    handleProcessingError(e, numeroOperacion, idStep);
+           
+            this.workOrderService.work(node,idStep);
+    
+        } catch (WorkOrderException  | IOException e) {
+            handleProcessingError(e, numeroOperacion, idStep);
         }
     }
 
