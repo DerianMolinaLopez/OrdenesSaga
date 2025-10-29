@@ -1,0 +1,9 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configuraciones-globales-proceso-reparaciones
+data:
+   DB_NAME: postgres-historiales-envios
+   DB_HOST: postgres-service
+   DB_PORT: "5432" # se debe de colocar como string por que marca errores de sintaxis requerida

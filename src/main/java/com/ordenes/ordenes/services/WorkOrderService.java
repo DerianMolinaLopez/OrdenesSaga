@@ -19,7 +19,7 @@ import com.ordenes.ordenes.utils.CreateStringStatusResponse;
 
 @Service
 public class WorkOrderService {
-
+    @Autowired
     private  ItemEntityRepository itemEntityRepository;
     private final Logger logger = LoggerFactory.getLogger(WorkOrderService.class);
     private ObjectMapper mapper = new ObjectMapper();
@@ -34,10 +34,12 @@ public class WorkOrderService {
 
     public void work(JsonNode node, String idStep) throws WorkOrderException, IOException {
          List<ItemEntity> listOfEntities = this.convertJsonNodeToItemModel(node);
-         this.saveAllItems(listOfEntities);
+         this.logger.info("Debug de cada uno de los items"); 
+        
+           this.saveAllItems(listOfEntities);
          this.logger.info("Finalizando con la insercion de las compras enviando confirmacion");
 
-         sendMessageConfirm(topic, idStep);
+         sendMessageConfirm(node.get("correlationId").asText(), idStep);
 
     }
      private List<ItemEntity> convertJsonNodeToItemModel(JsonNode node) throws IOException {

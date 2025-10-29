@@ -8,7 +8,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -44,29 +43,18 @@ public class ItemEntity {
 
     @Column(length = 64, nullable = false)
     private String vendor; //proveedor
-    @Lob
-    @Column(name = "attributes_json")
-    private String attributesJson;  //colores,garantias, consideracioines etc
 
-    private Boolean requiresSerial;
 
      @Column(name="status",nullable=true)
      private String status;
+
+
+     @Override
+     public String toString() {
+        return "ItemEntity [lineId=" + lineId + ", sku=" + sku + ", name=" + name + ", qty=" + qty + ", unitPrice="
+                + unitPrice + ", taxRate=" + taxRate + ", warehouse=" + warehouse + ", vendor=" + vendor + ", status="
+                + status + "]";
+     }
   
-    @Override
-    public String toString() {
-        return "ItemEntity{" +
-            "lineId='" + lineId + '\'' +
-            ", sku='" + sku + '\'' +
-            ", name='" + name + '\'' +
-            ", qty=" + String.valueOf(qty) +
-            ", unitPrice=" + (unitPrice == null ? "null" : unitPrice.toPlainString()) +
-            ", taxRate=" + (taxRate == null ? "null" : taxRate.toPlainString()) +
-            ", warehouse='" + warehouse + '\'' +
-            ", vendor='" + vendor + '\'' +
-            ", requiresSerial=" + String.valueOf(requiresSerial) +
-            ", attributesJson=" + (attributesJson == null ? "null" : "'" + attributesJson + "'") +
-            '}';
-    }
    
 }

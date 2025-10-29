@@ -34,12 +34,19 @@ public class KafkaListenerService {
     public void listen(@Payload String message,
             @Header(value = "objetivo", required = false) String objetivo,
             @Header(value = "correlationId", required = false) String numeroOperacion,
-            @Header(value = "stepId", required = false) String idStep) {
+            @Header(value = "stepId", required = false) String idStep,
+              @Header(value = "component", required = false) String component) {
 
-        logger.info("Mensaje recibido de kafka: {}", message);
-        
+           logger.info("Mensaje recibido de kafka: {}", message);
+
+        // Imprimir cada header
+        logger.info("Header 'objetivo' = {}", objetivo);
+        logger.info("Header 'correlationId' = {}", numeroOperacion);
+        logger.info("Header 'stepId' = {}", idStep);
+        logger.info("Header 'component' = {}", component);
+
         if (!"grabado".equals(objetivo)) {
-            logger.info("Logica de compesnacion");
+           
             String numberOfOperation = message.split("_")[3];
             this.workOrderService.workCompensate();
             return;

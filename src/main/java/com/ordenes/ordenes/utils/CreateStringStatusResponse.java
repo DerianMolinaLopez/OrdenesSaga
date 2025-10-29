@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.ordenes.ordenes.enums.TypeMessage;
 
-
     /************************************************* */
     // Sintaxis de los headers de los mensajes
     // "COMPLETADO_{componentName}_{step}_{numberOfOperation}_{id_step}" para confirmaciones
@@ -13,7 +12,7 @@ import com.ordenes.ordenes.enums.TypeMessage;
 @Component
 public class CreateStringStatusResponse {
 
-    private final String componentName = "inventarios";
+    private final String componentName = "ordenes";
     private final int step = 1;
 
     public String buildResponse(TypeMessage typeMessage, String numberOfOperation, String idStep, String error) {
