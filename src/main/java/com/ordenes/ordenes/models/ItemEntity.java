@@ -1,6 +1,7 @@
 package com.ordenes.ordenes.models;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -19,9 +20,13 @@ import lombok.Data;
 })
 public class ItemEntity {
     
+
+
     @Id
     @Column(length = 32, nullable = false)
     private String lineId;
+    @Column(name = "correlationId")
+    private String correlationId;
 
     @Column(length = 64, nullable = false, unique = true)
     private String sku;
@@ -47,6 +52,10 @@ public class ItemEntity {
 
      @Column(name="status",nullable=true)
      private String status;
+
+    @Column(name = "createdAt")
+    private LocalDateTime localdateTime;
+
 
 
      @Override

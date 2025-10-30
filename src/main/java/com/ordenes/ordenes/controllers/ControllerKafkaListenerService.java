@@ -17,7 +17,7 @@ import com.ordenes.ordenes.exceptions.WorkOrderException;
 import com.ordenes.ordenes.services.WorkOrderService;
 import com.ordenes.ordenes.utils.CreateStringStatusResponse;
 @Controller
-public class KafkaListenerService {
+public class ControllerKafkaListenerService {
     @Autowired
     private WorkOrderService workOrderService;
     @Autowired
@@ -39,16 +39,12 @@ public class KafkaListenerService {
 
            logger.info("Mensaje recibido de kafka: {}", message);
 
-        // Imprimir cada header
-        logger.info("Header 'objetivo' = {}", objetivo);
-        logger.info("Header 'correlationId' = {}", numeroOperacion);
-        logger.info("Header 'stepId' = {}", idStep);
-        logger.info("Header 'component' = {}", component);
 
         if (!"grabado".equals(objetivo)) {
-           
+            logger.info("Ocurrio un error para el numero de operacion: {}, inicaiando la compensacion de el procedimiento",numeroOperacion);
             String numberOfOperation = message.split("_")[3];
-            this.workOrderService.workCompensate();
+            this.workOrderService.workCompensate(numberOfOperation);
+            logger.info("Logica de compesnacion terminada");
             return;
         }
 
@@ -59,7 +55,9 @@ public class KafkaListenerService {
         try {
             JsonNode node = mapper.readTree(message);
            
-            this.workOrderService.work(node,idStep);
+
+  
+           this.workOrderService.work(node,idStep);
     
         } catch (WorkOrderException  | IOException e) {
             handleProcessingError(e, numeroOperacion, idStep);
@@ -67,13 +65,14 @@ public class KafkaListenerService {
     }
 
     private void handleProcessingError(Exception e, String numeroOperacion, String idStep) {
-        logger.error("Ocurrio un error durante la operacion: {}", e.getMessage(), e);
+        logger.error("Ocurrio un error durante la operacion: {}",numeroOperacion, e);
         String messageError = this.createStringStatusResponse.buildResponse(
             TypeMessage.FAILED, 
             numeroOperacion,
             idStep, 
             e.getMessage()
         );
+        logger.info("Enviando mensaje al topico de errores");
         this.controllerKafkaPublisher.publish(messageError, topicError);
     }
 
