@@ -35,12 +35,13 @@ public class ControllerKafkaListenerService {
             @Header(value = "objetivo", required = false) String objetivo,
             @Header(value = "correlationId", required = false) String numeroOperacion,
             @Header(value = "stepId", required = false) String idStep,
-              @Header(value = "component", required = false) String component) {
+            @Header(value = "component", required = false) String component) {
 
            logger.info("Mensaje recibido de kafka: {}", message);
 
 
         if (!"grabado".equals(objetivo)) {
+            logger.info("****************************************");
             logger.info("Ocurrio un error para el numero de operacion: {}, inicaiando la compensacion de el procedimiento",numeroOperacion);
             String numberOfOperation = message.split("_")[3];
             this.workOrderService.workCompensate(numberOfOperation);
@@ -60,6 +61,7 @@ public class ControllerKafkaListenerService {
            this.workOrderService.work(node,idStep);
     
         } catch (WorkOrderException  | IOException e) {
+            e.printStackTrace();
             handleProcessingError(e, numeroOperacion, idStep);
         }
     }

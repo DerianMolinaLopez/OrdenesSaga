@@ -53,6 +53,7 @@ private List<ItemEntity> convertJsonNodeToItemModel(JsonNode node, String correl
     {
        c.setCorrelationId(correlationId);
        c.setLocaldateTime(localDate);
+       c.setStatus("COMPLETADA");
     }
  
     );
